@@ -1,19 +1,35 @@
 #include <iostream>
+#include <string>
 using namespace std;
+int N = 0;
+int K = 0;
+int arr[10][1000];
+
+int out[10];
+bool being[1000];
 
 
-int f(int n)
+void P(int key)
 {
-	if (n == 0)
-		return 0;
-	else if (n == 1)
-		return 1;
-	else
-		return f(n - 1) + f(n - 2);
+	std::cout << key << endl;
+	for (int j = 0; j < K; j++) {
+		for (int i = 0; i < N; ++i) {
+		
+	}
+
+
 }
+
 int main()
 {
-	int n = 0;
-	cin >> n;
-	cout << f(n) << endl;
+
+	cin >> N;
+	cin >> K;
+
+	for (int j = 0; j < K; ++j) {
+		for (int i = 0; i < N; ++i) {
+			cin >> arr[j][i];
+		}
+	}
+
 }
