@@ -418,3 +418,7 @@ MigrationBackup/
 # End of https://www.toptal.com/developers/gitignore/api/windows,visualstudio,c++
 Algorithm Problems/.vs/Algorithm Problems/v16/.suo
 *.db
+
+*.user
+x64/
+ipch/
