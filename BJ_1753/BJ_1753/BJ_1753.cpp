@@ -1,6 +1,5 @@
 #include <iostream>
 #include <queue>
-#include <memory.h>
 using namespace std;
 
 constexpr int INF = 9999999;
@@ -43,9 +42,9 @@ int main()
 	for (int i = 1; i <= V; ++i) {
 	
 		if (MAX == d[i])
-			cout << "INF" << endl;
+			cout << "INF\n";
 		else
-			cout << d[i]<< endl;
+			cout << d[i]<< '\n';
 	
 	}
 
@@ -59,7 +58,7 @@ void Find(int start)
 	while (!pq.empty())
 	{
 		int cur = pq.top().target;
-		short dis = pq.top().weight;
+		int dis = pq.top().weight;
 		pq.pop();
 		if (d[cur] < dis) continue;
 
