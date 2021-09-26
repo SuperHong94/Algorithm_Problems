@@ -4,24 +4,46 @@
 using namespace std;
 
 bool couples[10][10];
-bool people[10];
-int search(int n, int cnt)
+bool isVist[10];
+int search(int startNum, int n, int cnt, int ret)
 {
-	if (cnt >= n)
+
+	if (n == cnt)
 		return 1;
 	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < n; ++j) {
+		if (isVist[startNum] == false) {
+			if (isVist[i] == false && couples[startNum][i] == true) {
+				isVist[startNum] = true;
+				isVist[i] = true;
+				ret += search(startNum + 1, n, cnt + 2, 0);
+				isVist[startNum] = false;
+				isVist[i] = false;
+			}
+		}
+		else {
+			ret += search(startNum + 1, n, cnt, 0);
+			break;
 		}
 	}
+	return ret;
 }
-int solution(int n)
+int solution(int n, int m)
 {
-	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < n; ++j) {
+	int ret = 0;
+
+
+	for (int j = 0; j < n; ++j) {
+		memset(isVist, false, sizeof(isVist));
+		if (couples[0][j] == true) {
+			isVist[0] = true;
+			isVist[j] = true;
+			couples[0][j] = false;
+			couples[j][0] = false;
+			ret += search(1, n, 2, 0);
 
 		}
 	}
-	
+	return ret;
 }
 int main()
 {
@@ -39,7 +61,7 @@ int main()
 			couples[a][b] = true;
 			couples[b][a] = true;
 		}
-		int res = solution(n);
-
+		int res = solution(n, m);
+		cout << res << endl;
 	}
 }
