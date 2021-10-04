@@ -13,23 +13,24 @@ H* W 크기의 게임판이 있습니다.게임판은 검은 칸과 흰 칸으로 구성된 격자 모양을 하
 */
 /// 
 #include <iostream>
+#include <memory.h>
 using namespace std;
 
 int H;
 int W;
 
-char BOARD[20][20];
+char BOARD[20][20]; //
 /*
-1. 모양
+0. 모양
 #
 ##
+1. 모양
+ #
+##
 2. 모양
- #
 ##
+ #
 3. 모양
-##
- #
-4. 모양
 ##
 #
 */
@@ -45,9 +46,11 @@ int main()
 {
 	int C = 0; cin >> C; //test case의 수
 	int result = 0;
-	int clearCnt = 0;
+
 	for (int c = 0; c < C; ++c)
 	{
+		
+		int clearCnt = 0;
 		cin >> H; cin >> W;
 		for (int i = 0; i < H; ++i) {
 			for (int j = 0; j < W; ++j) {
@@ -75,11 +78,14 @@ int  fill_0_Shape(int x, int y, int cnt)
 	//넣을 수 있는 자리인지 검사
 	if (BOARD[y][x] != '.' || BOARD[y + 1][x] != '.' || BOARD[y + 1][x + 1] != '.')
 		return 0;
+
+
 	BOARD[y][x] = '#';
 	BOARD[y + 1][x] = '#';
 	BOARD[y + 1][x + 1] = '#';
 
-	
+
+
 	//다음 노드를 어떻게 가야할까? 블럭당 8방향검사?
 	for (int i = 0; i < H; ++i)
 		for (int j = 0; j < W; ++j) {
@@ -88,14 +94,16 @@ int  fill_0_Shape(int x, int y, int cnt)
 				result += fill_1_Shape(j, i, cnt - 3);
 				result += fill_2_Shape(j, i, cnt - 3);
 				result += fill_3_Shape(j, i, cnt - 3);
+				BOARD[y][x] = '.';
+				BOARD[y + 1][x] = '.';
+				BOARD[y + 1][x + 1] = '.';
+				if (cnt - 3 == 0)
+					result += 1;
+				return result;
+	
 			}
 		}
-	BOARD[y][x] = '.';
-	BOARD[y + 1][x] = '.';
-	BOARD[y + 1][x + 1] = '.';
-	if (cnt - 3 == 0)
-		return 1;
-	return result;
+
 }
 
 int  fill_1_Shape(int x, int y, int cnt)
@@ -109,9 +117,11 @@ int  fill_1_Shape(int x, int y, int cnt)
 	//넣을 수 있는 자리인지 검사
 	if (BOARD[y][x] != '.' || BOARD[y + 1][x] != '.' || BOARD[y + 1][x - 1] != '.')
 		return 0;
+
 	BOARD[y][x] = '#';
 	BOARD[y + 1][x] = '#';
 	BOARD[y + 1][x - 1] = '#';
+
 
 
 	//다음 노드를 어떻게 가야할까? 블럭당 8방향검사?
@@ -122,14 +132,16 @@ int  fill_1_Shape(int x, int y, int cnt)
 				result += fill_1_Shape(j, i, cnt - 3);
 				result += fill_2_Shape(j, i, cnt - 3);
 				result += fill_3_Shape(j, i, cnt - 3);
+				BOARD[y][x] = '.';
+				BOARD[y + 1][x] = '.';
+				BOARD[y + 1][x - 1] = '.';
+				if (cnt - 3 == 0)
+					result += 1;
+				return result;
 			}
 		}
-	BOARD[y][x] = '.';
-	BOARD[y + 1][x] = '.';
-	BOARD[y + 1][x - 1] = '.';
-	if (cnt - 3 == 0)
-		return 1;
-	return result;
+
+
 }
 
 int fill_2_Shape(int x, int y, int cnt)
@@ -143,9 +155,12 @@ int fill_2_Shape(int x, int y, int cnt)
 	//넣을 수 있는 자리인지 검사
 	if (BOARD[y][x] != '.' || BOARD[y][x + 1] != '.' || BOARD[y + 1][x + 1] != '.')
 		return 0;
+
 	BOARD[y][x] = '#';
 	BOARD[y][x + 1] = '#';
 	BOARD[y + 1][x + 1] = '#';
+
+
 
 
 	//다음 노드를 어떻게 가야할까? 블럭당 8방향검사?
@@ -156,14 +171,15 @@ int fill_2_Shape(int x, int y, int cnt)
 				result += fill_1_Shape(j, i, cnt - 3);
 				result += fill_2_Shape(j, i, cnt - 3);
 				result += fill_3_Shape(j, i, cnt - 3);
+				BOARD[y][x] = '.';
+				BOARD[y][x + 1] = '.';
+				BOARD[y + 1][x + 1] = '.';
+				if (cnt - 3 == 0)
+					result += 1;
+				return result;
 			}
 		}
-	BOARD[y][x] = '.';
-	BOARD[y][x + 1] = '.';
-	BOARD[y + 1][x + 1] = '.';
-	if (cnt - 3 == 0)
-		return 1;
-	return result;
+	//return result;
 }
 
 int fill_3_Shape(int x, int y, int cnt)
@@ -177,9 +193,11 @@ int fill_3_Shape(int x, int y, int cnt)
 	//넣을 수 있는 자리인지 검사
 	if (BOARD[y][x] != '.' || BOARD[y][x + 1] != '.' || BOARD[y + 1][x] != '.')
 		return 0;
+
 	BOARD[y][x] = '#';
 	BOARD[y][x + 1] = '#';
 	BOARD[y + 1][x] = '#';
+
 
 	//다음 노드를 어떻게 가야할까? 블럭당 8방향검사?
 	for (int i = 0; i < H; ++i)
@@ -189,16 +207,17 @@ int fill_3_Shape(int x, int y, int cnt)
 				result += fill_1_Shape(j, i, cnt - 3);
 				result += fill_2_Shape(j, i, cnt - 3);
 				result += fill_3_Shape(j, i, cnt - 3);
+				BOARD[y][x] = '.';
+				BOARD[y][x + 1] = '.';
+				BOARD[y + 1][x] = '.';
+
+
+				if (cnt - 3 == 0)
+					result += 1;
+				return result;
 			}
 		}
-	BOARD[y][x] = '.';
-	BOARD[y][x + 1] = '.';
-	BOARD[y + 1][x] = '.';
-
-
-	if (cnt - 3 == 0)
-		return 1;
-	return result;
+	
 }
 
 int solution(int clearCnt)
