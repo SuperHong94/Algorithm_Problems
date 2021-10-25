@@ -121,7 +121,6 @@ string solution(string s)
 int main()
 {
 	int C = 0; cin >> C;
-	vector<string> v;
 	for (int i = 0; i < C; ++i)
 	{
 		string s;
