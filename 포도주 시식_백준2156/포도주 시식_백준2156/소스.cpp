@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory.h>
 using namespace std;
 
 
@@ -12,7 +13,7 @@ int solv(int start)
 	if (start >= N)
 		return 0;
 
-	if (cache[start] != 0)
+	if (cache[start] != -1)
 		return cache[start];
 
 
@@ -28,18 +29,13 @@ int solv(int start)
 
 int main()
 {
+	memset(cache, -1, sizeof(cache));
 	cin >> N;
-	for (int i = 1; i <= N; ++i)
+	for (int i = 0; i < N; ++i)
 		cin >> wine[i];
 
-	cache[1] = wine[1];
-	cache[2] = wine[1] + wine[2];
+	
 
-	for (int i = 3; i <= N; ++i)
-	{
-		cache[i] = max(cache[i - 1], max(cache[i - 2] + wine[i], cache[i - 3] + wine[i - 1] + wine[i]));
-	}
-
-	cout << cache[N];
+	cout << solv(0);
 
 }
