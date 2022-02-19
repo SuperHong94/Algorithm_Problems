@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 #include <memory.h>
 using namespace std;
 
@@ -9,24 +10,33 @@ const int dy[] = { -1,1,0,0 };
 const int dx[] = { 0,0,-1,1 };
 int Y = 0, X = 0;
 int cheaseCnt = 0;
-int DFS(int y, int x)
+void BFS()
 {
-	if (cache[y][x] != -1)
-		return 0;
-	cache[y][x] = 0; //°¬´ø°÷ ¸ø°¨ ¤¾¤¾
-	if (Board[y][x] == -1)
-		return 0;
-	if (Board[y][x] == 1 || Board[y][x] == 2) {
-		Board[y][x] = 2;
-		return 1;
-	}
+	queue<pair<int, int>> q;
+	q.push({ 1,1 });
+	cache[1][1] = 0;
+	while (!q.empty()) {
 
-	for (int i = 0; i < 4; ++i)
-	{
-		DFS(dy[i] + y, dx[i] + x);
+		pair<int, int> yx = q.front();
+		int y = yx.first;
+		int x = yx.second;
+		q.pop();
+		//cache[yx.first][yx.second] = 0;
+		
+
+		for (int i = 0; i < 4; ++i) {
+			if (Board[dy[i] + y][dx[i] + x] == -1 || cache[dy[i] + y][dx[i] + x] != -1)
+				continue;
+			if (Board[dy[i] + y][dx[i] + x] == 1 || Board[dy[i] + y][dx[i] + x] == 2) {
+				Board[dy[i] + y][dx[i] + x] = 2;
+				continue;
+			}
+			cache[dy[i] + y][dx[i] + x] = 0;
+			q.push({ dy[i] + y,dx[i] + x });
+
+		}
 
 	}
-	return 0;
 
 }
 
@@ -52,7 +62,7 @@ int solution()
 	while (true)
 	{
 		memset(cache, -1, sizeof(cache));
-		DFS(1, 1);
+		BFS();
 		cnt += 1;
 		int temp = GetCheaseCnt();
 		if (temp == 0)
