@@ -12,11 +12,21 @@ struct Object
 {
 	int _weight;
 	int _value;
+	Object operator+(const Object& right)
+	{
+		_weight = _weight + right._weight;
+		_value = _value + right._value;
+		return *this;
+	}
+	bool operator<(const Object& right) const {
+		return _value < right._value;
+	}
+
 };
 
 
 vector<Object> objects;
-int cache[100][100];//
+Object cache[100];//
 
 /// <summary>
 /// 
@@ -24,20 +34,20 @@ int cache[100][100];//
 /// <param name="index"> 현재 인덱스</param>
 /// <param name="weight"> 지금까지의 무게</param>
 /// <returns></returns>
-int DFS(int index, int weight)
+Object DFS(int index)
 {
+	if (cache[index]._value != -1)
+		return cache[index];
 
-	cache[index][index] = objects[index]._value;
+	Object ret = objects[index];
 
-	//cache[weight] = objects[index]._value;
-	int ret = objects[index]._value;
-	for (int i = index; i < objects.size(); ++i) {
-		if (cache[index][i] == -1)
-			if (i, weight + objects[i]._weight <= K)
-				cache[index][i] = objects[index]._value + DFS(i, weight + objects[i]._weight);
-		ret = max(cache[index][i], ret);
+	for (int i = index+1; i < objects.size(); ++i) {
+
+		Object temp= objects[index]+ DFS(i);
+		if (temp._weight > K)continue;
+		ret = max(ret, temp);
 	}
-	return ret;
+	return cache[index]=ret;
 }
 
 int main()
@@ -49,8 +59,6 @@ int main()
 		cin >> temp._weight >> temp._value;
 		objects.emplace_back(temp);
 	}
-	for (int i = 0; i < N; ++i) {
-		MAX = max(MAX, DFS(i, objects[i]._weight));
-	}
-	cout << MAX << '\n';
+	
+	cout << DFS(0)._value << '\n';
 }
