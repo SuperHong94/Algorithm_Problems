@@ -7,6 +7,9 @@ using namespace std;
 
 int cache[1000];// 첫시작이 n일때의 값을 저장
 int s = 0;
+vector<int> numbers;//길이만큼의 조합 
+int start = 0;
+int End = 0;
 int quant(const vector<int>& numbers, int start)
 {
 	if (cache[start] != -1)
