@@ -38,44 +38,50 @@ using namespace std;
 */
 
 
-int lines[501];//예시 1, 200연결이면 lines[1][0]=200; 이렇게할꺼임
-int copylines[501];
-int cache[501];
+int lines[502];//예시 1, 200연결이면 lines[1][0]=200; 이렇게할꺼임
+int copylines[502];
+int cache[502];
 int N;
 int MIN = 100;
 
 int CutCrossline(int point)
 {
-	if (cache[point] != 0)
-		return cache[point];
-	for (int i = 0; i < 501; ++i) { //자기 가로지르는거 다자르기
-		if (copylines[i] == 0) continue;
 
-		if (i > point) {
-			if (copylines[i] > copylines[point]) {
-				copylines[i] = 0;
-				cache[point] += 1;
+	int ret = 0;
+
+	cache[point] = 1;  //방문
+	for (int i = 1; i <= 500; ++i) {  //겹친거 끊는 루프
+		if (cache[i] != 0)continue;//이미 자른거임
+		if (copylines[i] != 0) {
+			if (point < i) {
+				if (copylines[point] > copylines[i]) {
+					ret += 1;
+					cache[i] = 1;// 지웠다 치고
+
+				}
 			}
-		}
-		else if (i < point) {
-			if (copylines[i] > copylines[point]) {
-				copylines[i] = 0;
-				cache[point] += 1;
+			else if (point > i) {
+				if (copylines[point] < copylines[i]) {
+					ret += 1;
+					cache[i] = 1;
+				}
 			}
+
 		}
 	}
 
-	//중복을 막기위해
-	copylines[point] = 0;
-
-	for (int i = point + 1; i < 501; ++i) { //안자른거에서 재귀돌기
+	//copylines[point] = 0;
+	int minRet = 0;
+	for (int i = 1; i <=500; ++i) {
 		if (copylines[i] == 0) continue;
-
-		if (copylines[i] == 1)
-			cache[point] += CutCrossline(i);
+		if (cache[i] == 0){
+			cache[i] = 1;
+			minRet = min(minRet, CutCrossline(i));
+			cache[i] = 0;
+		}
 	}
-	return cache[point];
 
+	return ret;
 }
 int main()
 {
@@ -87,16 +93,17 @@ int main()
 
 	}
 
-	for (int i = 0; i < 501; ++i) {
+	for (int i = 1; i <= 500; ++i) {
 		if (lines[i] == 0) continue;
 		memcpy(copylines, lines, sizeof(lines));
-		CutCrossline(i);
-		//MIN = min(MIN, CutCrossline(i));
+		memset(cache, 0, sizeof(cache));
+		//CutCrossline(i);
+		MIN = min(MIN, CutCrossline(i));
 	}
 
-	for (int i = 0; i < 501; i++) {
-		if (cache[i] == 0)continue;
-		MIN = min(MIN, cache[i]);
-	}
+	//for (int i = 0; i < 501; i++) {
+	//	if (cache[i] == 0)continue;
+	//	MIN = min(MIN, cache[i]);
+	//}
 	cout << MIN << endl;
 }
