@@ -14,7 +14,7 @@ int solution(vector<vector<int>> board, vector<int> moves) {
 				basket.push_back(board[i][target-1]); //바구니에 넣기;
 				board[i][target-1] = 0;
 				//연속되는지 검사
-				if (basket.size() > 2) {
+				if (basket.size() >=2) {
 					/*	if (basket[basket.size() - 1] == basket[basket.size() - 2]) {*/
 					if (*(basket.end() - 1) == *(basket.end() - 2)) {
 						basket.pop_back();
