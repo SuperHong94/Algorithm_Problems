@@ -5,6 +5,12 @@ int triangle[100][100];
 int cache[100][100];
 int N = 0;
 
+/*
+가장 큰 수를 구하는 것은 쉽다. 
+문제는 가장 큰 수를 만드는 모든 경로를 세는 것?
+
+
+*/
 
 int solution(int x, int y)
 {
