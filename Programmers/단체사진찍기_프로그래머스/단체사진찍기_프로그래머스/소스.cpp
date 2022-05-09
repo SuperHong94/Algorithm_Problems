@@ -1,6 +1,6 @@
 #include <iostream>
 
-using namespace std;
+
 
 
 #include <string>
@@ -8,43 +8,53 @@ using namespace std;
 #include <memory.h>
 using namespace std;
 
-const int SIZE = 8;
-/*5
-예시
-n=2, ["N~F=0", "R~T>2"]
-N~F=0의 의미는
-N은F와 간격이 0이기를 원한다.
-
-
-
-그냥싹다 나열한다음에 이거 조건 같은지만 검사할까?
-
-*/
-
+int SIZE =8;
 int posArr[8];
 int result = 0;
-
+bool visit[8];
 
 int FRIEND2int(char c)
 {
 	switch (c)
 	{
 	case 'A':
-		return 0;
+		for (int i = 0; i < SIZE; ++i)
+			if (posArr[i] == 0)
+				return i;
 	case 'C':
-		return 1;
+		for (int i = 0; i < SIZE; ++i)
+			if (posArr[i] == 1)
+				return i;
+
 	case 'F':
-		return 2;
+		for (int i = 0; i < SIZE; ++i)
+			if (posArr[i] == 2)
+				return i;
+
 	case 'J':
-		return 3;
+		for (int i = 0; i < SIZE; ++i)
+			if (posArr[i] == 3)
+				return i;
+
 	case 'M':
-		return 4;
+		for (int i = 0; i < SIZE; ++i)
+			if (posArr[i] == 4)
+				return i;
+
 	case 'N':
-		return 5;
+		for (int i = 0; i < SIZE; ++i)
+			if (posArr[i] ==5)
+				return i;
+
 	case 'R':
-		return 6;
+		for (int i = 0; i < SIZE; ++i)
+			if (posArr[i] == 6)
+				return i;
+
 	case 'T':
-		return 7;
+		for (int i = 0; i < SIZE; ++i)
+			if (posArr[i] == 7)
+				return i;
 	default:
 		return -1;
 		break;
@@ -56,29 +66,87 @@ bool isTrue(const string& s)
 	int right = FRIEND2int(s[2]);
 	char op = s[3];
 	int opValue = s[4]-'0';
+	opValue += 1;
 
 	switch (op)
 	{
 	case '=':
-		if (abs(posArr[left] - posArr[right]) == 1)
+		if (abs(left- right) == opValue)
 			return true;
-		//break;
+		break;
 	case '<':
-		if (abs(posArr[left] - posArr[right]) < opValue+1)
+		if (abs(left -right) < opValue)
 			return true;
 		break;
 	case '>':
-		if (abs(posArr[left] - posArr[right]) > opValue + 1)
+		if (abs(left - right) > opValue)
 			return true;
 		break;
-	default:
-		return false;
+	
 	}
 
 	return false;
 }
 
-int DFS(int who, int index,const vector<string>& data) //who를 index로 채운다.
+
+
+
+
+void DFS2(int index, const vector<string>& data)
+{
+
+	if (index == SIZE)
+	{
+		bool flag = true;
+		for (const auto& s : data)
+		{
+			if (isTrue(s) == false) {
+				return;
+			}
+		}
+		if (true == flag)
+			result += 1;
+		return;
+	}
+	for (int i = 0; i < SIZE; ++i) {
+		if (visit[i] == false) {
+			posArr[index] = i;
+			visit[i] = true;
+			DFS2(index + 1,data);
+			visit[i] = false;
+
+		}
+	}
+
+}
+
+int solution(int n, vector<string> data) {
+	SIZE = 8;
+	memset(posArr, 0, sizeof(posArr));
+	memset(visit, false, sizeof(visit));
+	result = 0;
+	//for (int i = 0; i < SIZE; ++i)
+	//{
+	//	DFS(i, 0,data);
+	//}
+	DFS2(0, data);
+
+	return result;
+}
+
+
+//답이 틀렸다 뭐가 문제였을까?
+//DFS 바꿔서 해본다.
+int main()
+{
+
+	cout<<solution(5, { "N~F=0", "R~T>2" });
+	
+	//DFS2(0);
+}
+
+
+int DFS(int who, int index, const vector<string>& data) //who를 index로 채운다.
 {
 
 
@@ -89,7 +157,7 @@ int DFS(int who, int index,const vector<string>& data) //who를 index로 채운다.
 	{
 		if (posArr[i] == -1) //아직 방문안한 노드
 		{
-			DFS(i, index + 1,data); //아직방문안한 노드에 index+1 번호 주기
+			DFS(i, index + 1, data); //아직방문안한 노드에 index+1 번호 주기
 			posArr[i] = -1;
 		}
 	}
@@ -106,32 +174,9 @@ int DFS(int who, int index,const vector<string>& data) //who를 index로 채운다.
 		}
 		if (true == flag)
 			result += 1;
-		
+
 	}
 	posArr[who] = -1;
 	return 0;
-
-}
-
-
-int solution(int n, vector<string> data) {
-	memset(posArr, -1, sizeof(posArr));
-	result = 0;
-	for (int i = 0; i < SIZE; ++i)
-	{
-		DFS(i, 0,data);
-	}
-
-	return result;
-}
-
-
-//답이 틀렸다 뭐가 문제였을까?
-//DFS 바꿔서 해본다.
-int main()
-{
-
-	cout<<solution(5, { "N~F=0", "R~T>2" });
-	
 
 }
