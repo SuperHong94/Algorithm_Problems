@@ -1,42 +1,27 @@
 #include <iostream>
+#include <memory.h>
 #include <string>
 using namespace std;
 
 const int SIZE = 1000;
 string strings[2];
-int cache[SIZE];
+int cache[SIZE][SIZE];
 
 
-//문자열 A, B가 있다.
-/*
-* A and B 에서 가장 긴 부분 수열을 찾는다. 
-* A를 기준으로 찾자. B기준으로 찾자
-* 
-*/
-
-//int FindIndexB(char c,int index)//index이후부터
-//{
-//	for(int i=0;i<strings[1].length();++i)
-//}
-
-int solution(int index,int indexB)
+int solution(int indexA,int indexB)
 {
-	if (cache[index]!= -1)
-		return cache[index];
+	if (indexA == -1 || indexB == -1)
+		return 0;
+	if (cache[indexA][indexB] != -1)
+		return cache[indexA][indexB];
+	if (strings[0][indexA] == strings[1][indexB])
+		return cache[indexA][indexB] = solution(indexA - 1, indexB - 1) + 1;
 
-	int& ret = cache[index];
-	ret = 1;
-	for (int i = index+1; i < strings[0].length(); ++i)
-	{
-		for (int j = indexB; j < strings[1].length(); ++j) {
-			if (strings[0][i] == strings[1][j]){
-				ret = max(ret, ret+solution(i, j));
-				break;
-			}
-		}
-	}
-	return ret;
+	else
+		return cache[indexA][indexB] = max(solution(indexA - 1, indexB), solution(indexA, indexB - 1));
+
 }
+
 
 int main()
 {
@@ -44,12 +29,10 @@ int main()
 		cin >> strings[i];
 	}
 	memset(cache, -1, sizeof(cache));
-	cout << solution(0, 0);
+
+	int ret = 0;
+	cout << solution(strings[0].length()-1,strings[1].length()-1) << endl;
 
 
 }
 
-
-//안되네 뭐가 문제인지 고민고고씽~~
-
-//서로 번갈아가면서 하는 방법을 해보자.
