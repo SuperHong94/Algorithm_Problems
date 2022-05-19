@@ -9,6 +9,8 @@ using namespace std;
 * 날이 맑으면 1m 올라간다.
 * 
 * m일간 각 일마다 비올확률은 75% m일안에 달팽이가 우물끝까지 올라갈 확률을 계산하는 프록램
+* 13분 12초
+* 0.75 0.75 0.75 
 */
 
 constexpr float SUCESS = 0.75f;
@@ -16,10 +18,12 @@ constexpr float FAIL = 0.35f;
 int N = 0, M = 0;
 float  solution(int n,int m)
 {
-	if (n == 0)
+	if (n <=0)
 		return 1.0f;
 	if (m == 0)
 		return 1.0f;
+
+	return (0.75f * solution(n - 2, m - 1) + 0.25f * solution(n - 1, m - 1));
 }
 int main()
 {
