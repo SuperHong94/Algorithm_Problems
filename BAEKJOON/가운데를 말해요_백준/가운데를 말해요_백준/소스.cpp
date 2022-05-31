@@ -32,14 +32,14 @@ public:
 
 	void insert(int num)
 	{
-		int parent = (size - 1) / 2;
+
 		v.push_back(num); //끝에다가 넣기
 		if (size == 0) {
 			size++;
 			return;
 		}
 		int cur = size;
-		for (int i = parent; i >= 0; i = (i - 1) / 2) {
+		for (int i = (size - 1) / 2; i >= 0; i = (i - 1) / 2) {
 			if (v[i] < num)
 			{
 				int tmp = v[cur];
