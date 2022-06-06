@@ -3,6 +3,7 @@ https://www.acmicpc.net/problem/3197
 */
 #include <iostream>
 #include <memory.h>
+#include <queue>
 using namespace std;
 
 
@@ -13,7 +14,7 @@ constexpr char L = 'L';
 
 
 char Map[1500][1500];
-bool vist[1500][1500];
+bool visit[1500][1500]; //어느방향에서 방문했는지 확인
 int R, C;
 
 
@@ -21,30 +22,109 @@ int dy[] = { -1,1,0,0 };
 int dx[] = { 0,0,-1,1 };
 
 int tx[2], ty[2];
-int  DFS(int x, int y)
+
+
+
+queue<pair<short, short>> q;  //백조 큐
+queue<pair<short, short>> water; //물큐
+queue<pair<short, short>> nq;
+queue<pair<short, short>> nwater;
+
+
+bool BFS()
 {
-	if (x < 0 || x >= C || y < 0 || y >= R)
-		return 0;
-	if (vist[y][x] == true)
-		return 0;
-	vist[y][x] = true;
 
-	if (ICE == Map[y][x])
-		return 0;
 
-	//if (find == true)
-		if (x == tx[1] && y == ty[1])
-			return 1;
-
-	int ret = 0;
-	for (int i = 0; i < 4; ++i)
+	while (q.empty() == false)
 	{
-		int nX = x + dx[i], nY = y + dy[i];
-		ret += DFS(nX, nY);
+		auto pos = q.front();
+		q.pop();
+
+		visit[pos.second][pos.first] = true;
+
+
+
+
+
+		for (int i = 0; i < 4; ++i)
+		{
+			int nX = pos.first + dx[i], nY = pos.second + dy[i];
+			if (nX < 0 || nX >= C || nY < 0 || nY >= R || visit[nY][nX] == true)
+				continue;
+
+			visit[nY][nX] = true;
+			if (Map[nY][nX] == ICE)
+			{
+				nq.push({ nX,nY });
+				continue;
+			}
+			if (nX == tx[1] && nY== ty[1])
+				return true;
+		
+			q.push({ nX,nY });
+		}
 	}
-	return ret;
+
+	return false;
+
 }
 
+
+bool BFS2()
+{
+
+
+	while (water.empty() == false)
+	{
+		auto pos = water.front();
+		water.pop();
+
+
+		for (int i = 0; i < 4; ++i)
+		{
+			int nX = pos.first + dx[i], nY = pos.second + dy[i];
+			if (nX < 0 || nX >= C || nY < 0 || nY >= R)
+				continue;
+
+			if (Map[nY][nX] == ICE)
+			{
+				Map[nY][nX] = WATER;
+				nwater.push({ nX,nY });
+				continue;
+			}
+		}
+	}
+
+	return false;
+
+}
+int sol()
+{
+	//백조 찾기
+	int cnt = 0;
+
+	q.push({ tx[0],ty[0] });
+	visit[ty[0]][tx[0]] = true;
+
+	while (true) {
+
+		if (true == BFS())
+			return cnt;
+		cnt++;
+		
+		BFS2();
+
+		q = nq;
+		water = nwater;
+		while (!nq.empty())nq.pop();
+		while (!nwater.empty())nwater.pop();
+
+
+	}
+	return cnt;
+
+
+}
 
 int main()
 {
@@ -60,28 +140,12 @@ int main()
 				ty[Y++] = i;
 				Map[i][j] = WATER;
 			}
+			if (WATER == Map[i][j])
+				water.push({ j,i });
 
 		}
 
 
-	int day = 0;
-	while (0 == DFS(tx[0], ty[0])) {
-		day++;
-
-		for (int i = 0; i < R; ++i)
-			for (int j = 0; j < C; ++j)
-				if (WATER == Map[i][j])
-					DFS(j, i);
-
-		for (int i = 0; i < R; ++i)
-			for (int j = 0; j < C; ++j)
-				if (true == vist[i][j])
-					Map[i][j] = WATER;
-		memset(vist, 0, sizeof(vist));
-	}
-
-	cout << day;
+	cout << sol();
 }
 
-
-//DFS 시간초과 뜨네
