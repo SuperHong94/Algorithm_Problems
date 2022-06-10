@@ -3,55 +3,45 @@ https://algospot.com/judge/problem/read/POLY
 */
 
 #include <iostream>
+
 using namespace std;
-int N;
-const int dx[] = { 0,1 };
-const int dy[] = { 1,0 };
 
-int cache[101];//n개의 사각형일 때의 세로 단조 폴리오미노의 개수
-char board[101][101];
+constexpr int MOD = 10000000;
+int cache[101][101];//n개의 사각형일 때의 세로 단조 폴리오미노의 개수
 
-int sol(int n)
+
+int sol(int n, int first)
 {
-	if (n == N)
-		return N;
+	if (n == first)return 1;
+	if (cache[n][first] != 0)
+		return cache[n][first];
+	for (int i = 1; i <= n-first; ++i)
+	{
+		int ret = i + first - 1;
+		ret *= sol(n - first, i);
+		ret %= MOD;
+		cache[n][first] += ret;
+		cache[n][first] %= MOD;	
 
-	if (cache[n] != 0)
-		return cache[n];
-	
-	bool isTrue = true;
-	for(int i=1;i<=n;++i){
-		int oldX = 1;
-		if (isTrue == false)
-			break;
-		for (int j = 1; j <= n; ++j)
-		{
-			if (board[i][j] == 1)
-			{
-				if (oldX == 1)
-					oldX = j;
-				else if (j - oldX > 1) {
-					isTrue = false;
-					break;
-				}
-			}
-		}
-	} //세로 단조인지 확인
-
-	return cache[n] = sol(n - 1) + sol(n - 1);
+	}
+	return cache[n][first];
 }
 
 int main()
 {
 	int C = 0; cin >> C;
 
-	cache[1] = 1;
-	cache[2] = 2;
 	while (C--)
 	{
-		cin >> N;
+		//memset(cache, 0, sizeof(cache));
+		int n = 0; cin >> n;
 
-
+		int ret = 0;
+		for(int i=1;i<=n;++i){
+			ret += sol(n, i);
+			ret %= MOD;
+		}
+		cout << ret << endl;
 
 	}
 }
