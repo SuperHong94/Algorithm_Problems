@@ -11,7 +11,7 @@ int day;
 int start;
 float result[100][50];//d에 n마을에 있을 확률 저장
 
-void run(int d, int p)
+void BFS(int d, int p)
 {
 	queue<int> q;
 	q.push(p);
@@ -42,5 +42,9 @@ int main()
 	int c = 0; cin >> c;
 	while (c--) {
 		cin >> village_cnt >> day >> start;
+
+		for (int i = 0; i < village_cnt; ++i)
+			for (int j = 0; j < village_cnt; ++j)
+				cin >> village[i][j];
 	}
 }
