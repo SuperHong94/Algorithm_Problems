@@ -3,6 +3,8 @@
 #include <memory.h>
 using namespace std;
 
+//덩어리 채로 떨어져야 한다.
+
 int R, C, N;
 char cave[100][100];
 bool visit[100][100];
