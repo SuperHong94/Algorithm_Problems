@@ -37,42 +37,20 @@ void Update()
 		if (cave[R - 1][i] == 'x')
 			DFS(R - 1, i);
 	}
-	for (int c = 0; c < C; ++c) {
-		int DY = 0;
-		int startY = 0;
-		for (int r = R - 1; r >= 0; --r)
-		{
-			if (cave[r][c] == 'x' && visit[r][c] == false)
+	int topY = R-1, bottomY = 0;
+
+	for (int i = 0; i < C; ++i)
+	{
+		for (int j = 0; j < R; ++j) {
+			if (cave[i][j] == 'x' && visit[i][j] == false)
 			{
-				startY = r;
-				for (int k = r+1; k < R; ++k)
-				{	
-					if (cave[k][c] == 'x') {
-						DY = k - r-1;
-						break;
-					}
-					if (k == R - 1){
-						DY = k - r;
-					}
-				}
-				break;
+				topY = min(topY, i);
+				bottomY = max(bottomY, i);
 			}
 		}
-
-		for (int i = startY; i >= 0; i--)
-		{
-			cave[i + DY][c] = cave[i][c];
-			cave[i][c] = '.';
-		}
 	}
 
 
-	for (int i = 0; i < R; ++i) {
-		for (int j = 0; j < C; ++j) {
-			cout << cave[i][j];
-		}
-		cout << endl;
-	}
 }
 
 void Crash(int h, bool isRight)
