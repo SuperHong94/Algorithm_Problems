@@ -1,15 +1,17 @@
 //https://www.acmicpc.net/problem/2933
 #include <iostream>
+#include <vector>
 #include <memory.h>
+#include <algorithm>
 using namespace std;
 
 //µ¢¾î¸® Ã¤·Î ¶³¾îÁ®¾ß ÇÑ´Ù.
 
 int R, C, N;
-char cave[100][100];
-bool visit[100][100];
+char cave[101][101];
+bool visit[101][101];
 
-int sticks[100];
+
 
 int dx[] = { 0,0,-1,1 };
 int dy[] = { 1,-1,0,0 };
@@ -20,15 +22,44 @@ void DFS(int y, int x)
 	visit[y][x] = true;
 	for (int i = 0; i < 4; ++i)
 	{
-		if (y < 0 || x < 0 || y == R || x == C)continue;
+		if (y < 0 || x < 0 || y >= R || x>= C)continue;
 		int nextY = y + dy[i];
 		int nextX = x + dx[i];
 
-		if (cave[nextY][nextX] == 'x'&&visit[nextY][nextX]==false)
+		if (cave[nextY][nextX] == 'x' && visit[nextY][nextX] == false)
 			DFS(nextY, nextX);
 	}
 }
 
+void DownBlock(vector<pair<int, int>>& tb)
+{
+	while (true)
+	{
+		for (auto& block : tb)
+		{
+			int y = block.first;
+			int x = block.second;
+			
+			if (y == R - 1) //¹Ù´Ú¿¡ µµ´Þ
+				return;
+			if ( visit[y + 1][x]==true) //¶³¾îÁ®¼­ ¹Ù´Ú Å¬·¯½ºÅÍ¿Í ¸¸³µÀ»¶§
+				return;
+			
+
+		}
+		for (auto& block : tb)
+		{
+			int& y = block.first;
+			int x = block.second;
+			cave[y + 1][x] = 'x';
+			cave[y][x] = '.';
+
+			y += 1;
+		}
+
+	}
+
+}
 void Update()
 {
 	memset(visit, 0, sizeof(visit));
@@ -37,19 +68,22 @@ void Update()
 		if (cave[R - 1][i] == 'x')
 			DFS(R - 1, i);
 	}
-	int topY = R-1, bottomY = 0;
 
+	vector<pair<int, int>> targetBlocks;
 	for (int i = 0; i < C; ++i)
 	{
-		for (int j = 0; j < R; ++j) {
-			if (cave[i][j] == 'x' && visit[i][j] == false)
+		for (int j = R - 1; j >= 0; --j) {
+			if (cave[j][i] == 'x' && visit[j][i] == false)
 			{
-				topY = min(topY, i);
-				bottomY = max(bottomY, i);
+				targetBlocks.emplace_back(j, i);
 			}
 		}
 	}
+	if (0 != targetBlocks.size())
+		DownBlock(targetBlocks);
 
+
+	
 
 }
 
@@ -79,12 +113,14 @@ void Crash(int h, bool isRight)
 		}
 	}
 
-	
+
+
+
 }
 int main()
 {
-	ios::sync_with_stdio(false);
-	cin.tie(0);
+	/*ios::sync_with_stdio(false);
+	cin.tie(0);*/
 
 	cin >> R >> C;
 	for (int i = 0; i < R; ++i)
@@ -95,14 +131,14 @@ int main()
 	for (int i = 0; i < N; ++i)
 	{
 		cin >> height;
-		height =R- height;
+		height = R - height;
 
 		Crash(height, i & 1);
 	}
 
 
-	for (int i = 0; i < R; ++i){
-		for (int j = 0; j < C; ++j){
+	for (int i = 0; i < R; ++i) {
+		for (int j = 0; j < C; ++j) {
 			cout << cave[i][j];
 		}
 		cout << endl;
