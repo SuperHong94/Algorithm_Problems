@@ -1,56 +1,72 @@
+//https://school.programmers.co.kr/learn/courses/30/lessons/72412
+
 #include <string>
 #include <vector>
-
+#include <iostream>
+#include <sstream>
+#include <unordered_map>
+#include <algorithm>
 using namespace std;
 
 
-int GetNum(const vector<string>& info, const string& lan, const string& pos, const string& level,
-	const string& food, const string& score)
-{
-	int ret = 0;
-	int sc = stoi(score);
-	for (const auto& item : info) {
-		int i = item.rfind(" ");
-		string itemScore = item.substr(i);
-		int itemSc = stoi(itemScore);
-		if (item.find(lan) == -1)continue;
-		if (item.find(pos) == -1)continue;
-		if (item.find(level) == -1)continue;
-		if (item.find(food) == -1)continue;
-		if (itemSc < sc)continue;
-		ret += 1;
-
-	}
-	return ret;
-}
-
+unordered_map<string, int> Map;
+vector<int> List[4][3][3][3];
 vector<int> solution(vector<string> info, vector<string> query) {
 	vector<int> answer;
+	Map["-"] = 0;
+	Map["cpp"] = 1;
+	Map["java"] = 2;
+	Map["python"] = 3;
+	Map["backend"] = 1;
+	Map["frontend"] = 2;
+	Map["junior"] = 1;
+	Map["senior"] = 2;
+	Map["chicken"] = 1;
+	Map["pizza"]=2;
 
-	for (const auto& item : query)
+	for (auto str : info)
 	{
-		int p = 0;
-		int cur = item.find(" and ");
-		string language = item.substr(p, cur - p);
+		stringstream sst(str);
+		string a,b,c,d;
+		int score;
+		sst >> a >> b >> c >> d >> score;
+		int arr[4] = { Map[a],Map[b],Map[c],Map[d] };
 
-		p = cur + 1;
-		cur = item.find(" and ", p);
-		string position = item.substr(cur+5, cur-5 - p);
-
-		p = cur + 1;
-		cur = item.find(" and ", p);
-		string level = item.substr(cur + 5, cur-5 - p);
-
-		p = cur + 1;
-		cur = item.find(" and ", p);
-		string food = item.substr(cur + 5, cur - 5 - p);
-
-		p = cur + 1;
-		cur = item.find(" and ", p);
-		string score = item.substr(cur + 5, cur - 5 - p);
-		int ret = GetNum(info, language, position, level, food, score);
-		answer.push_back(ret);
+		for (int i = 0; i < (1 << 4); ++i) {
+			int idx[4] = { 0, };
+			for (int j = 0; j < 4; ++j) {
+				if (i & (1 << j)) {
+					idx[j] = arr[j];
+				}
+			}
+			List[idx[0]][idx[1]][idx[2]][idx[3]].push_back(score);
+		}
 	}
+
+	for (int a = 0; a < 4; ++a) {
+		for (int b = 0; b < 3; ++b) {
+			for (int c = 0; c < 3; ++c) {
+				for (int d = 0; d < 3; ++d) {
+					sort(List[a][b][c][d].begin(), List[a][b][c][d].end());
+				}
+			}
+		}
+	}
+	
+	for (auto str : query)
+	{
+		stringstream sst(str);
+		string a, b, c, d, tmp;
+		int score;
+		sst >> a >> tmp >> b >> tmp >> c >> tmp >> d >> score;
+
+		auto& slist=List[Map[a]][Map[b]][Map[c]][Map[d]];
+
+		vector<int>::iterator low = lower_bound(slist.begin(), slist.end(), score);
+		answer.push_back(slist.end() - low);
+	}
+
+
 	return answer;
 }
 
