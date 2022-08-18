@@ -1,0 +1,30 @@
+//https://school.programmers.co.kr/learn/courses/30/lessons/42578
+
+#include <string>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+unordered_map<string,int> um;
+
+
+int solution(vector<vector<string>> clothes) {
+    int answer = 1;
+
+  
+    for(const auto& clothe: clothes)
+    {
+        um[clothe[1]]++;
+    }
+    for(auto& i: um)
+    {
+        i.second++;  //적어도 하나는 입고있어야하니깐 아무것도 안입는경우 까지 포함한다.
+    }
+
+    for(const auto& i: um)
+    {
+        answer*=i.second;
+    }
+    answer--;  //전부 안입었을 경우 한가지의 경우 빼준다.
+
+    return answer;
+}
