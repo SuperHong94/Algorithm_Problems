@@ -1,0 +1,29 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int solution(int n, vector<int> stations, int w)
+{
+    int answer = 0;
+
+    //시간 초과 뜨네 
+    // [실행] 버튼을 누르면 출력 값을 볼 수 있습니다.
+
+   //스테이션 기준으로 봐야한다.스테이션은 정렬되어있다.
+    int s_cur=0;
+    int cur=1;
+    while(cur<=n)
+    {
+        if(cur>=(stations[s_cur]-w)&&s_cur<stations.size()){//현재 위치가 이미 설치된 범위안에있으면
+            cur=stations[s_cur]+w+1;
+            s_cur++;
+        }
+        else{
+            cur=cur+w+w+1;
+            answer++;
+        }
+
+    }
+
+    return answer;
+}
