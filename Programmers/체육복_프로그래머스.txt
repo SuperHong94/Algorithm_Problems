@@ -1,0 +1,50 @@
+//https://school.programmers.co.kr/learn/courses/30/lessons/42862
+//첫번째 답
+#include <vector>
+
+using namespace std;
+
+int solution(int n, vector<int> lost, vector<int> reserve) {
+    int answer = 0;
+    vector<int> students(n+2,1);
+    for(int i:reserve) students[i]++;
+    for(int i:lost) students[i]--;
+
+    
+   for(int i=1;i<=n;++i){
+        if(students[i]==2&&students[i-1]==0){
+                students[i-1]=students[i]=1;
+            }
+        else if(students[i]==2&&students[i+1]==0){
+                students[i+1]=students[i]=1;
+            }
+    }
+    
+    for(int i=1;i<=n;++i)
+       if(students[i]>0)answer++; 
+    return answer;
+}
+
+//두번째 정답
+#include <vector>
+#include <set>
+#include <unordered_set>
+using namespace std;
+
+int solution(int n, vector<int> lost, vector<int> reserve) {
+    int answer = 0;
+    unordered_set<int> l(lost.begin(),lost.end());
+    set<int> r;
+    unordered_set<int> inter; //l과 r의 교집합
+    for(auto& x: reserve){
+        if(l.find(x)==l.end())r.insert(x);
+        else inter.insert(x);
+    }
+    for(auto& x: inter) l.erase(x);
+    for(auto& x: r){
+        if(l.find(x-1)!=l.end()) l.erase(x-1);
+        else if(l.find(x+1)!=l.end()) l.erase(x+1);
+    }
+    
+    return n-l.size();
+}
