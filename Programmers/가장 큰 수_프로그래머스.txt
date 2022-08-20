@@ -1,0 +1,57 @@
+//https://school.programmers.co.kr/learn/courses/30/lessons/42746
+//내가 한 정답 
+#include <string>
+#include <vector>
+#include <set>
+using namespace std;
+struct Order
+{
+	bool operator()(const string& l, const string& r)const
+	{
+		string ln = l + r;
+		string rn = r + l;
+
+		return ln >rn;
+	}
+
+
+};
+string solution(vector<int> numbers) {
+    multiset<string,Order> nums;
+    for (auto& n : numbers) {
+        nums.insert(to_string(n));
+    }
+    string answer;
+    for(auto& n:nums)
+        answer+=n;
+    return answer[0]=='0'?"0":answer;
+}
+
+
+//해설 정답
+
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+bool cmp(int a, int b)
+{
+	string s1 = to_string(a) + to_string(b);
+	string s2 = to_string(b) + to_string(a);
+
+	return s1 > s2;
+}
+
+string solution(vector<int> numbers) {
+	string answer = "";
+	sort(numbers.begin(), numbers.end(), cmp);
+
+	for (auto i : numbers)
+		answer += to_string(i);
+
+	
+	return answer[0]=='0'?"0":answer;
+}
+
