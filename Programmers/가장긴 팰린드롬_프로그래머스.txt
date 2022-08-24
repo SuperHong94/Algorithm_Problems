@@ -1,0 +1,35 @@
+//https://school.programmers.co.kr/learn/courses/30/lessons/12904
+#include <iostream>
+#include <string>
+using namespace std;
+int solution(string s)
+{
+    int answer=1;
+    //가운데 기준으로 나뉜다.
+    for(int i=0;i<s.length();++i){
+        int l=i-1, r=i+1;
+        int ret=1;
+        while(l>=0&&r<s.length()){
+            if(s[l]==s[r])
+                ret+=2;
+            else
+                break;
+            l--;
+            r++;
+        }
+        answer=max(ret,answer);
+        l=i-1;r=i;
+        ret=0;
+        while(l>=0&&r<s.length()){
+            if(s[l]==s[r])
+                ret+=2;
+            else
+                break;
+            l--;
+            r++;
+        }
+        answer=max(ret,answer);
+    }
+
+    return answer;
+}
