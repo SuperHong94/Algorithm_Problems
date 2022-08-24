@@ -1,0 +1,36 @@
+//https://school.programmers.co.kr/learn/courses/30/lessons/43164
+#include <string>
+#include <vector>
+#include <queue>
+#include <set>
+#include <unordered_map>
+#include <algorithm>
+using namespace std;
+
+unordered_map<string, priority_queue<string, vector<string>, greater<string>>> um;
+
+vector<string> solution(vector<vector<string>> tickets) {
+
+    vector<string> answer;
+    sort(tickets.begin(),tickets.end(),greater<vector<string>>());
+    unordered_map<string,vector<string>> um;
+    for (auto& t : tickets) {
+        um[t[0]].push_back(t[1]);
+    }
+    vector<string>s=vector<string>{"ICN"};
+    while(!s.empty()){
+        string airport=s.back();
+        if(um.find(airport)==um.end()||um[airport].size()==0){
+            answer.push_back(airport);
+            s.pop_back();
+        }
+        else{
+            s.push_back(um[airport].back());
+            um[airport].pop_back();
+        }
+    }
+ 
+
+    reverse(answer.begin(),answer.end());
+    return answer;
+}
