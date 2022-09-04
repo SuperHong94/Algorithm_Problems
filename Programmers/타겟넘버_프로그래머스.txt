@@ -1,0 +1,26 @@
+//https://school.programmers.co.kr/learn/courses/30/lessons/43165
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int ret=0;
+void sol(const vector<int>& numbers,int index,int cur,int target)
+{
+    if(index==numbers.size())
+    {
+        if(target==cur)
+            ret++;
+        return;
+    }
+    
+
+    sol(numbers,index+1,cur+numbers[index],target);
+    sol(numbers,index+1,cur-numbers[index],target);
+ 
+}
+int solution(vector<int> numbers, int target) {
+    int answer = 0;
+    sol(numbers,0,0,target);
+    return ret;
+}
