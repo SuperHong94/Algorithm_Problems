@@ -1,3 +1,4 @@
+//https://algospot.com/judge/problem/read/TRAVERSAL
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -40,6 +41,11 @@ public:
 
 };
 
+
+vector<int> Slice(const vector<int>& v, int a, int b)
+{
+	return vector<int>(v.begin() + a, v.begin() + b);
+}
 void postOrder(const vector<int>& pre, const vector<int>& mid)
 {
 	int n = pre.size();
@@ -47,7 +53,9 @@ void postOrder(const vector<int>& pre, const vector<int>& mid)
 		return;
 	int root = pre[0];
 	int m = find(mid.begin(), mid.end(), root)-mid.begin();
-	postOrder(vector<int>(mid.begin()+1,mid.begin()+m))
+	postOrder(Slice(pre, 1, m+1),Slice(mid,0,m));
+	postOrder(Slice(pre, m + 1, n), Slice(mid, m + 1, n));
+	cout << root << ' ';
 
 }
 int main()
@@ -69,7 +77,8 @@ int main()
 			cin >> a;
 			midOrder.push_back(a);
 		}
-
+		postOrder(preOrder, midOrder);
+		cout << '\n';
 
 	}
 }
