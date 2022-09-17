@@ -1,0 +1,29 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+//배치 순서는 못바꾼다.
+//number가 백만 자리 -> O(n) 정도 복잡도 나오면 좋겠음
+
+string solution(string number, int k) {
+	string answer = "";
+
+	answer += number[0];
+	for (int i = 1; i < number.length(); ++i)
+	{
+
+		while (answer.back() < number[i] && answer.length() > 0 && k > 0) {
+			answer.pop_back();
+			k--;
+		}
+		if (k == 0) {
+			answer += number.substr(i, number.length() - i);
+			break;
+		}
+
+		answer += number[i];
+
+	}
+
+	return  answer.substr(0, answer.length() - k);
+}

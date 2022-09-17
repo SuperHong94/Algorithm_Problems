@@ -23,6 +23,7 @@ public:
 };
 
 
+
 int longest;
 int height(Wall* root)
 {
