@@ -14,8 +14,8 @@ int main()
 		int N = 0; cin >> N;
 
 		vector<int>A;
-		A.reserve(N);
-		A.push_back(1983);
+		A.resize(N);
+		A[0]=(1983);
 		int a = 0, b = 0; cin >> a >> b;
 		for (int i = 1; i < N; ++i)
 		{
@@ -26,16 +26,25 @@ int main()
 		int sum = 0;
 		for (int i = 0; i < A.size(); ++i)
 		{
-			if (max_q.empty())max_q.push(A[i]);
-			else if (max_q.top() < A[i])
+			if (max_q.size() == min_q.size())
+				max_q.push(A[i]);
+			else if (max_q.size() > min_q.size())
 			{
-				if (min_q.empty())min_q.push(A[i]);
-				else if()
+				min_q.push(A[i]);
 			}
-
-			sum += max_q.top();
+			else
+				max_q.push(A[i]);
+			if (!max_q.empty() && !min_q.empty() && max_q.top() > min_q.top())
+			{
+				int max = max_q.top(); max_q.pop();
+				int min = min_q.top(); min_q.pop();
+				min_q.push(max);
+				max_q.push(min);
+			}
+			sum = (sum+max_q.top())% 20090711;
 
 		}
+		cout << sum << '\n';
 
 	}
 }
