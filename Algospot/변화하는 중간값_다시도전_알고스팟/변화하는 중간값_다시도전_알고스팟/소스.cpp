@@ -10,17 +10,17 @@ int main()
 	int T = 0; cin >> T;
 	while (T--) {
 		priority_queue<int> max_q;
-		priority_queue<int> min_q;
+		priority_queue<int,vector<int>,greater<int>> min_q;
 		int N = 0; cin >> N;
 
 		vector<int>A;
 		A.resize(N);
 		A[0]=(1983);
-		int a = 0, b = 0; cin >> a >> b;
+		long long a = 0, b = 0; cin >> a >> b;
 		for (int i = 1; i < N; ++i)
 		{
-
-			A[i] = (A[i - 1] * a + b) % 20090711;
+			long long temp = (A[i - 1] * a + b) % 20090711;;
+			A[i] = temp;
 		}
 
 		int sum = 0;
@@ -28,12 +28,8 @@ int main()
 		{
 			if (max_q.size() == min_q.size())
 				max_q.push(A[i]);
-			else if (max_q.size() > min_q.size())
-			{
-				min_q.push(A[i]);
-			}
 			else
-				max_q.push(A[i]);
+				min_q.push(A[i]);
 			if (!max_q.empty() && !min_q.empty() && max_q.top() > min_q.top())
 			{
 				int max = max_q.top(); max_q.pop();
