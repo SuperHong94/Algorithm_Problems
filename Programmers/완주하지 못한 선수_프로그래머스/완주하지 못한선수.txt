@@ -1,0 +1,24 @@
+//https://school.programmers.co.kr/learn/courses/30/lessons/42576
+#include <string>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+string solution(vector<string> participant, vector<string> completion) {
+    string answer = "";
+    unordered_map<string, int> m;
+    for(auto& name:participant)
+    {
+        m[name]++;
+    }
+    for(auto& name:completion)
+    {
+        m[name]--;
+    }
+    for(auto& item:m)
+    {
+        if(item.second==1)
+            return item.first;
+    }
+    return answer;
+}
