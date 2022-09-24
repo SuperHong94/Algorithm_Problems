@@ -1,10 +1,14 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <memory.h>
 #include <iostream>
 #include <algorithm>
 using namespace std;
 int dis[50001];
+bool Ends[50001];
+
+
 int BFS(int n, int start, const vector<vector<int>>& paths, const vector<int>& summits, int& top)
 {
 
@@ -12,24 +16,33 @@ int BFS(int n, int start, const vector<vector<int>>& paths, const vector<int>& s
 	{
 		dis[i] = 990000001;
 	}
+
 	dis[start] = 0;
-	priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-	pq.push({ 0, start });
-	while (false == pq.empty())
+	queue<pair<int, int>> q;
+	q.push({ 0, start });
+	while (false == q.empty())
 	{
-		auto node = pq.top(); pq.pop();
-		int distance = node.first;
+		auto node = q.front(); q.pop();
+		int parent = node.first;
 		int id = node.second;
+		if (Ends[id] == true)continue;
 		for (int i = 0; i < paths.size(); ++i)
 		{
 
-			if (paths[i][0] == id) {
+			if (paths[i][0] == id && paths[i][1] != parent) {
 				int nextIndex = paths[i][1];
 				int weight = paths[i][2];
-				if (distance + weight < dis[nextIndex]) {
-					dis[nextIndex] = distance + weight;
-					pq.push({ distance + weight, nextIndex });
-				}
+				int nextValue = max(weight, dis[id]);
+				dis[nextIndex] = min(dis[nextIndex], nextValue);
+				q.push({ id, nextIndex });
+			}
+			else if ((paths[i][1] == id && paths[i][0] != parent))
+			{
+				int nextIndex = paths[i][0];
+				int weight = paths[i][2];
+				int nextValue = max(weight, dis[id]);
+				dis[nextIndex] = min(dis[nextIndex], nextValue);
+				q.push({ id, nextIndex });
 			}
 
 		}
@@ -48,12 +61,20 @@ int BFS(int n, int start, const vector<vector<int>>& paths, const vector<int>& s
 
 }
 
+
 vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector<int> summits) {
 	vector<int> answer;
 	answer.resize(2);
 	int minValue = 999999999;
 	int index = 0;
 	sort(summits.begin(), summits.end());
+
+
+	memset(Ends, false, sizeof(Ends));
+	for (int i : summits)
+	{
+		Ends[i] = true;
+	}
 	for (int start : gates)
 	{
 
@@ -74,7 +95,7 @@ vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector
 
 int main()
 {
-	auto v = solution(6, { {1, 2, 3}, {2, 3, 5}, {2, 4, 2}, {2, 5, 4}, {3, 4, 4}, {4, 5, 3}, {4, 6, 1}, {5, 6, 1} }, { 1, 3 }, { 5 });
+	auto v = solution(7 ,{ {1, 4, 4}, { 1, 6, 1 }, { 1, 7, 3 }, { 2, 5, 2 }, { 3, 7, 4 }, { 5, 6, 6 }} ,{1}, {2, 3, 4});
 
 	cout << v[0] << ' ' << v[1];
 }
