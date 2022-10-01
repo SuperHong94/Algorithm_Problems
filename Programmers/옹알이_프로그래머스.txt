@@ -1,0 +1,41 @@
+//https://school.programmers.co.kr/learn/courses/30/lessons/120956
+#include <string>
+#include <vector>
+using namespace std;
+
+int solution(vector<string> babbling) {
+    int answer = 0;
+
+    unordered_map<string, int> um;
+    string arr[] = { "aya","ye","woo","ma" };
+    string noarr[] = { "ayaaya","yeye","woowoo","mama" };
+    for (const auto& word : babbling)
+    {
+        string tmp = word;
+        for(int i=0;i<4;++i){
+            int t = tmp.find(noarr[i]);
+            if(t!=-1)
+            tmp.replace(t, noarr[i].length(), "z");
+        }
+        while (true) {
+            if (tmp == "") {
+                answer++;
+                break;
+            }
+            bool flag = false;
+            for (int i = 0; i < 4; ++i)
+            {
+                if (tmp.substr(0, arr[i].length()) == arr[i]) {
+                    tmp = tmp.substr(arr[i].length());
+                    flag = true;
+                    break;
+                }
+  
+            }
+            if (flag == false)
+                break;
+
+        }
+    }
+    return answer;
+}
