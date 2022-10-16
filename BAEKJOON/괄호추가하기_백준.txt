@@ -1,0 +1,51 @@
+//https://www.acmicpc.net/problem/16637
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int getRet(int left, char op, int right)
+{
+	switch (op)
+	{
+	case '+':
+		left += right;
+		break;
+	case '*':
+		left *= right;
+		break;
+	case '-':
+		left -= right;
+		break;
+	default:
+		break;
+	}
+	return (left);
+}
+int answer = -2147000000;
+void sol(int index, int cur, string& ex)
+{
+
+	if (index >= ex.length()) {
+		answer = max(answer, cur);
+		return;
+	}
+	char op = index == 0 ? '+' : ex[index - 1];
+
+	if (index + 2 < ex.length()) {
+		int tmp = getRet(ex[index] - '0', ex[index + 1], ex[index + 2] - '0');
+		sol(index + 4, getRet(cur, op, tmp), ex);
+	}
+	sol(index + 2, getRet(cur, op, ex[index] - '0'), ex);
+
+}
+
+int main()
+{
+	int N = 0; cin >> N;
+	string expression;
+	cin >> expression;
+
+	sol(0, 0, expression);
+	cout << answer;
+}
