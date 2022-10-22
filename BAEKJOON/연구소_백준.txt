@@ -1,0 +1,124 @@
+//https://www.acmicpc.net/problem/14502 연구소
+//벽을 어떻게 칠것인가?
+//벽이 이동한다면 어떨까? 0인것중에 3개 골라서 벽으로 하자
+//벽을 치지 않으면 바이러스가 연구소를 꽉 채운다고 가정
+
+
+
+
+
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+using namespace std;
+int N, M;
+int dx[] = { 0,0,-1,1 };
+int dy[] = { -1,1,0,0 };
+bool visit[8][8];
+vector<pair<int, int>> newWalls;
+bool isContinue(const vector<vector<int>>& MAP, int x, int y) //건너뛰어야될경우
+{
+	return (x < 0 || x >= M || y < 0 || y >= N || MAP[y][x] != 0);
+}
+
+int getArea(vector<vector<int>> MAP, queue<pair<int, int>> q)
+{
+	while (!q.empty())
+	{
+		int curX = q.front().second;
+		int curY = q.front().first;
+		q.pop();
+		for (int i = 0; i < 4; ++i)
+		{
+			int nextX = curX + dx[i];
+			int nextY = curY + dy[i];
+			if (isContinue(MAP, nextX, nextY) == true) continue;
+			MAP[nextY][nextX] = 2;
+			q.push({ nextY,nextX });
+		}
+	}
+
+	int ret = 0;
+	for (int i = 0; i < N; ++i)
+		for (int j = 0; j < M; ++j)
+			if (MAP[i][j] == 0)
+				ret++;
+
+	/*if (ret != 0) {
+
+		cout << endl;
+		for (int i = 0; i < N; ++i) {
+			for (int j = 0; j < M; ++j)
+				cout << MAP[i][j] << ' ';
+			cout << endl;
+		}
+	}*/
+	return ret;
+}
+int sol(queue<pair<int, int>> virus, vector<vector<int>>& MAP)
+{
+	
+	int ret = 0;
+	vector<int> v(newWalls.size());
+	vector<int> p(newWalls.size());
+	for (int i = 0; i < v.size(); ++i)
+	{
+		v[i] = i;
+	}
+	for (int i = newWalls.size() - 3; i < newWalls.size(); ++i) {
+		p[i] = 1;
+	}
+	do {
+		for (int i = 0; i < p.size(); ++i)
+		{
+			if (p[i] != 1)continue;
+			int curX = newWalls[v[i]].second;
+			int curY = newWalls[v[i]].first;
+			MAP[curY][curX] = 1;
+
+		}
+		ret=max(ret,getArea(MAP, virus));
+		for (int i = 0; i < p.size(); ++i)
+		{
+			if (p[i] != 1)continue;
+			int curX = newWalls[v[i]].second;
+			int curY = newWalls[v[i]].first;
+			MAP[curY][curX] =0;
+
+		}
+	} while (next_permutation(p.begin(), p.end()));
+
+
+
+
+	return ret;
+}
+
+
+int main()
+{
+	cin >> N >> M;
+	vector<vector<int>> MAP(N, vector<int>(M));
+
+	queue<pair<int, int>> virus;
+
+
+	for (int i = 0; i < N; ++i)
+		for (int j = 0; j < M; ++j) {
+			cin >> MAP[i][j];
+			if (MAP[i][j] == 2)
+				virus.push({ i,j });
+			if (MAP[i][j] == 0) {
+				newWalls.push_back({ i,j });
+			}
+
+		}
+	int ret = 0;
+	for (int i = 0; i < N; ++i)
+		for (int j = 0; j < M; ++j)
+			if (MAP[i][j] == 0)
+				ret++;
+	cout << sol(virus, MAP);
+
+}
