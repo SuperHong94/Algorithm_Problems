@@ -1,0 +1,45 @@
+//https://www.acmicpc.net/problem/11866
+//요세푸스 문제 0
+
+
+#include <iostream>
+#include <list>
+#include <vector>
+using namespace std;
+
+
+
+
+int main()
+{
+	int N = 0, K = 0; cin >> N >> K;
+	vector<int> l;
+
+	vector<int> ret;
+
+
+	for (int i = 0; i < N; ++i)
+	{
+		l.push_back(i + 1);
+	}
+	auto  start = l.begin();
+	while (l.size())
+	{
+		for (int i = 0; i < K - 1; ++i)
+		{
+
+			start++;
+			if (start == l.end()) {
+				start = l.begin();
+			}
+		}
+		ret.push_back(*start);
+		start = l.erase(start);
+		if (start == l.end())
+			start = l.begin();
+	}
+	cout << '<';
+	for (int i = 0; i < ret.size() - 1; ++i)
+		cout << ret[i] << ", ";
+	cout << ret.back() << '>';
+}
