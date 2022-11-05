@@ -1,0 +1,88 @@
+//https://www.acmicpc.net/problem/15686
+//치킨 배달
+#include <iostream>
+#include <vector>
+using namespace std;
+using POS = pair<int, int>;
+
+int N, M;
+
+struct HOUSE
+{
+	POS pos;
+	vector<int> chickenValues;
+};
+vector<POS> chicken;
+vector<HOUSE> houses;
+
+int ret;
+void combi(vector<int>& v, int index)
+{
+	if (v.size() == M)
+	{
+		int total = 0;
+
+		for (const auto& house : houses) {
+			int cost = 123456789;
+			for (int i : v)
+			{
+				cost = min(house.chickenValues[i], cost);
+			}
+			total += cost;
+		}
+		ret = min(total, ret);
+		return;
+	}
+	if (index == chicken.size())
+		return;
+
+	v.push_back(index);
+	combi(v, index + 1);
+	v.pop_back();
+	combi(v, index + 1);
+
+}
+int main()
+{
+	cin >> N >> M;
+
+	for (int i = 0; i < N; ++i)
+	{
+		for (int j = 0; j < N; ++j) {
+			int a = 0;
+			cin >> a;
+			if (a == 1) {
+				houses.push_back({ { i,j }, });
+			}
+			else if (a == 2)
+				chicken.push_back({ i,j });
+		}
+	}
+
+	//무엇을 어떤 지점을 제거할 것인가?
+	//치킨집수Cm 해서 모든 조합 구해서 거기서 최소값으로 한번해볼까?
+
+	for (auto& house : houses)
+	{
+		house.chickenValues.resize(chicken.size());
+	}
+	for (int i = 0; i < chicken.size(); ++i)
+	{
+		for (auto& house : houses) {
+			house.chickenValues[i] = abs(chicken[i].first - house.pos.first) + abs(chicken[i].second - house.pos.second);
+		}
+	}
+
+	for (const auto& house : houses) {
+
+		int cost = *(min(house.chickenValues.begin(), house.chickenValues.end()));
+		
+		ret += cost;
+	}
+
+	vector<int> v;
+	combi(v, 0);
+
+	cout << ret << '\n';
+
+}
