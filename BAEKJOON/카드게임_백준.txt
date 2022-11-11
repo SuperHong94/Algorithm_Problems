@@ -1,0 +1,211 @@
+//https://www.acmicpc.net/problem/2621
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+//카드색은 rgby 4개
+
+//족보
+/*
+스트레이트 플러쉬 900점
+4카드 800
+풀하우스 3장같은 숫자에 10을 곱하고 나머지 2장을 더하고 +700
+플러쉬 600
+트리플 트리플 숫자+400
+2+1+2 2개 같은 수중 큰수에 10곱하고 작은수 더하고 300더하기
+투페어 같은숫자+200
+아무것도 없으면 100더하기 
+
+두가 이상 적용가능하면 높은점수가 카드 점수이다.
+*/
+
+using CARD = pair<int, char>;
+
+bool StraightFlush(const vector<CARD>& cards);
+bool FourCard(const vector<CARD>& cards);
+bool FullHouse(const vector<CARD>& cards);
+bool Flush(const vector<CARD>& cards);
+bool Straight(const vector<CARD>& cards);
+
+bool Treeful(const vector<CARD>& cards);
+bool TwoOneTwo(const vector<CARD>& cards);
+bool twoPair(const vector<CARD>& cards);
+
+int ret = 0;
+int main()
+{
+	vector<CARD> cards;
+	for (int i = 0; i < 5; ++i)
+	{
+		char color;int  num;
+		cin >> color >> num;
+		cards.push_back({ num,color });
+	}
+
+	sort(cards.begin(), cards.end());
+
+	if (StraightFlush(cards) == true) {
+		cout << ret;
+	}
+	else if (FourCard(cards) == true) {
+		cout << ret;
+	}
+	else if (FullHouse(cards)) {
+		cout << ret;
+	}
+	else if (Flush(cards)) {
+		cout << ret;
+	}
+	else if (Straight(cards)) {
+		cout << ret;
+	}
+	else if (Treeful(cards)) {
+		cout << ret;
+	}
+	else if (TwoOneTwo(cards)) {
+		cout << ret;
+	}
+	else if (twoPair(cards)) {
+		cout << ret;
+	}
+	else {
+		auto it = max_element(cards.begin(), cards.end());
+		ret = (*it).first+100;
+		cout << ret;
+	}
+
+
+
+}
+
+bool StraightFlush(const vector<CARD>& cards)
+{
+	if (Flush(cards) && Straight(cards))
+	{
+		auto it = max_element(cards.begin(), cards.end());
+		ret = (*it).first + 900;
+		return true;
+	}
+	return false;
+}
+
+bool FourCard(const vector<CARD>& cards)
+{
+	int sameCnt = 1;
+	int sameValue = cards[1].first;
+	bool flag = true;
+	for (int i = 2; i < cards.size()-1; ++i) {
+		if (sameValue != cards[i].first) {
+			return false;
+		}
+	}
+	if (sameValue == cards[0].first) {
+		ret = sameValue + 800;
+		return true;
+
+	}
+	else if (sameValue == cards[4].first)
+	{
+		ret = sameValue + 800;
+		return true;
+	}
+
+	return false;
+}
+
+bool FullHouse(const vector<CARD>& cards)
+{
+	int nums[5];
+	for (int i = 0; i < 5; ++i)
+		nums[i] = cards[i].first;
+	if (nums[0] == nums[1] && nums[0] == nums[2] && nums[3] == nums[4]) {
+		ret = (nums[0] * 10) + (nums[3]) + 700;
+		return true;
+	}
+	else if (nums[0] == nums[1] && nums[2] == nums[3] && nums[2] == nums[4]) {
+		ret = (nums[0]) + (nums[2]*10) + 700;
+		return true;
+	}
+
+	return false;
+}
+
+bool Flush(const vector<CARD>& cards)
+{
+	int MAX = cards[0].first;
+	for (int i = 1; i < 5; ++i) {
+		MAX = max(MAX, cards[i].first);
+		if (cards[0].second != cards[i].second)
+			return false;
+	}
+	ret = MAX + 600;
+	return true;
+}
+
+bool Straight(const vector<CARD>& cards)
+{
+	for (int i = 1; i < 5; ++i) {
+		if (cards[i].first - cards[i - 1].first != 1)
+			return false;
+	}
+	ret = cards[4].first + 500;
+	return true;
+}
+
+bool Treeful(const vector<CARD>& cards)
+{
+	int nums[5];
+	for (int i = 0; i < 5; ++i)
+		nums[i] = cards[i].first;
+	if (nums[0] == nums[1] && nums[0] == nums[2] ) {
+		ret = nums[0]+400;
+		return true;
+	}
+	else if ( nums[2] == nums[4] && nums[3] == nums[4]) {
+		ret = nums[4] + 400;
+		return true;
+	}
+	return false;
+}
+
+bool TwoOneTwo(const vector<CARD>& cards)
+{
+	int sameNum = cards[0].first;
+	int flag = 0;
+	int MAX = 0;
+	int MIN = 99999;
+	for (int i = 1; i < cards.size(); ++i) {
+		if (sameNum == cards[i].first){
+			flag++;
+			MAX = max(MAX, cards[i].first);
+			MIN = min(MIN, cards[i].first);
+		}
+		else {
+			sameNum = cards[i].first;
+		}
+	}
+
+	if (flag > 1) {
+		ret = MAX * 10 + MIN + 300;
+		return true;
+	}
+
+	return false;
+}
+
+bool twoPair(const vector<CARD>& cards)
+{
+	int sameNum = cards[0].first;
+	for (int i = 1; i < cards.size(); ++i) {
+		if (sameNum == cards[i].first) {
+			ret = 200 + cards[i].first;
+			return true;
+		}
+		else {
+			sameNum = cards[i].first;
+		}
+	}
+
+	return false;
+}
