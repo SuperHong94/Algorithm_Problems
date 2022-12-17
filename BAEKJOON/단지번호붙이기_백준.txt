@@ -1,0 +1,54 @@
+//단지번호붙이기 
+//https://www.acmicpc.net/problem/2667
+#include <iostream>
+#include <vector>
+#include <set>
+using namespace std;
+
+vector<vector<char>> MAP;
+vector<vector<bool>> visit;
+int cnt = 0;
+int totalCnt = 0;
+constexpr int dx[] = { 0,0,-1,1 };
+constexpr int dy[] = { -1,1,0,0 };
+void DFS(int y, int x)
+{
+	cnt++;
+	visit[y][x] = true;//방문
+	for (int i = 0; i < 4; ++i) {
+		int nY = y + dy[i], nX = x + dx[i];
+		if (nX < 0 || nX >= MAP.size() || nY < 0 || nY >= MAP.size()||MAP[nY][nX]=='0'||visit[nY][nX]==true)
+			continue;
+
+		DFS(nY, nX);
+	}
+}
+
+
+
+int main()
+{
+	int N = 0;
+	multiset<int> ret;
+	cin >> N;
+
+	MAP.resize(N, vector<char>(N));
+	visit.resize(N, vector<bool>(N));
+	for (int i = 0; i < N; ++i)
+		for (int j = 0; j < N; ++j)
+			cin >> MAP[i][j];
+
+
+	for (int i = 0; i < N; ++i)
+		for (int j = 0; j < N; ++j)
+			if (MAP[i][j] == '1' && visit[i][j] == false){
+				DFS(i, j);
+				ret.insert(cnt);
+				cnt = 0;
+			}
+
+
+	cout << ret.size() << '\n';
+	for (auto r : ret)
+		cout << r << '\n';
+}
