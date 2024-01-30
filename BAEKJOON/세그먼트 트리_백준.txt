@@ -1,0 +1,116 @@
+//https://www.acmicpc.net/problem/2042
+#include<iostream>
+#include <vector>
+#include <cmath>
+using namespace std;
+
+long long N = 0;
+long long M = 0;
+long long K = 0;
+long long Size = 0;
+long long GetTreeSize(long long n)
+{
+	long long k = 0;
+	while (true)
+	{
+		long long size = std::pow(2, k);
+		if (size >= n)
+		{
+			return size * 2;
+		}
+		k++;
+	};
+}
+
+void InitVector(std::vector<long long>& v, long long n)
+{
+	Size = GetTreeSize(n);
+	v.resize(Size);
+	long long startIndex = Size / 2;
+	for (long long i = 0; i < n; ++i)
+	{
+		cin >> v[startIndex + i];
+	}
+
+	for (long long i = startIndex - 1; i > 0; i--)
+	{
+		v[i] = v[i * 2] + v[i * 2 + 1];
+	}
+}
+long long GetTreeIndex(long long valueIndex)
+{
+	return Size / 2 + valueIndex - 1;
+}
+
+long long FindValue(std::vector<long long>& tree, long long startIndex, long long EndIndex)
+{
+
+	if (EndIndex < startIndex)
+	{
+		return 0;
+	}
+	else if (EndIndex == startIndex)
+	{
+		return tree[startIndex];
+	}
+
+	long long ret = 0;
+
+	if (startIndex % 2 == 0)
+	{
+		startIndex = startIndex / 2;
+	}
+	else
+	{
+		ret += tree[startIndex];
+		startIndex = startIndex / 2 + 1;
+	}
+
+	if (EndIndex % 2 == 0)
+	{
+		ret += tree[EndIndex];
+		EndIndex = EndIndex / 2 - 1;
+	}
+	else
+	{
+		EndIndex = EndIndex / 2;
+	}
+
+	return FindValue(tree, startIndex, EndIndex) + ret;
+
+}
+
+void Update(std::vector<long long>& tree, long long treeindex, long long diff)
+{
+	if (treeindex <= 0)
+	{
+		return;
+	}
+
+	tree[treeindex] += diff;
+
+	return Update(tree, treeindex / 2, diff);
+}
+
+int main()
+{
+	cin >> N >> M >> K;
+
+	std::vector<long long> tree;
+	InitVector(tree, N);
+	long long a = 0, b = 0, c = 0;
+	for (long long i = 0; i < M + K; ++i)
+	{
+		cin >> a >> b >> c;
+		if (a == 1)
+		{
+			Update(tree, GetTreeIndex(b), c - tree[GetTreeIndex(b)]);
+		}
+		else if (a == 2)
+		{
+			cout << FindValue(tree, GetTreeIndex(b), GetTreeIndex(c)) << '\n';
+		}
+	}
+
+
+}
