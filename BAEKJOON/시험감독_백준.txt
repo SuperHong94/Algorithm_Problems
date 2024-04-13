@@ -1,0 +1,45 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+
+struct Director
+{
+	int capacity{};
+};
+
+int main()
+{
+	Director mainD, subD;
+
+	int N{};
+	cin >> N;
+
+	vector<int> testPlaces(N, 0);
+
+	for (int i = 0; i < N; ++i)
+	{
+		cin >> testPlaces[i];
+	}
+
+	cin >> mainD.capacity >> subD.capacity;
+
+	long long directorCount = N;
+	for (int personCount : testPlaces)
+	{
+		personCount -= mainD.capacity;
+
+		if (personCount > 0)
+		{
+			directorCount += personCount / subD.capacity;
+			if (personCount % subD.capacity)
+			{
+				directorCount += 1;
+			}
+		}
+	}
+
+	cout << directorCount << endl;
+
+
+}
