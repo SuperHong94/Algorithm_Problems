@@ -1,0 +1,298 @@
+//https://www.acmicpc.net/problem/12100
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+using namespace std;
+
+std::vector<std::vector<int>> Board{};
+int N{};
+void PrintBoard(const std::vector<std::vector<int>>& board);
+enum DIR
+{
+	U = 0, D, L, R
+};
+
+int GetMax(const std::vector<std::vector<int>>& board)
+{
+	int MAX = board[0][0];
+	for (int i = 0; i < N; ++i)
+		for (int j = 0; j < N; ++j)
+			MAX = std::max(MAX, board[i][j]);
+
+	return MAX;
+}
+
+struct Data
+{
+	int depth{};
+	std::vector<DIR> path{};
+};
+
+using MAPBoard = std::vector<std::vector<int>>;
+
+void Combine(MAPBoard& board, int x, int y, int x2, int y2)
+{
+	if (x2 < 0 || x2 == N || y2 < 0 || y2 == N)
+	{
+		return;
+	}
+
+	if (board[y][x] == board[y2][x2])
+	{
+		board[y][x] *= 2;
+		board[y2][x2] = 0;
+	}
+}
+
+void Pull(MAPBoard& board, DIR dir)
+{
+	switch (dir)
+	{
+	case U:
+	{
+		for (int i = 0; i < N; ++i)
+		{
+			for (int j = 0; j < N; ++j)
+			{
+				if (board[j][i] == 0)
+				{
+					int k = j + 1;
+					while (k < N)
+					{
+						if (board[k][i] != 0)
+						{
+							std::swap(board[j][i], board[k][i]);
+							break;
+						}
+						k++;
+					}
+
+				}
+			}
+		}
+	}
+	break;
+	case D:
+	{
+		for (int i = 0; i < N; ++i)
+		{
+			for (int j = N - 1; j > 0; --j)
+			{
+				if (board[j][i] == 0)
+				{
+					int k = j - 1;
+					while (k != -1)
+					{
+						if (board[k][i] != 0)
+						{
+							std::swap(board[j][i], board[k][i]);
+							break;
+						}
+						--k;
+					}
+
+				}
+			}
+		}
+	}
+	break;
+	case L:
+		for (int i = 0; i < N; ++i)
+		{
+			for (int j = 0; j < N; ++j)
+			{
+				if (board[i][j] == 0)
+				{
+					int k = j + 1;
+					while (k < N)
+					{
+						if (board[i][k] != 0)
+						{
+							std::swap(board[i][j], board[i][k]);
+							break;
+						}
+						k++;
+					}
+				}
+			}
+		}
+		break;
+	case R:
+		for (int i = 0; i < N; ++i)
+		{
+			for (int j = N - 1; j > 0; --j)
+			{
+				if (board[i][j] == 0)
+				{
+					int k = j - 1;
+					while (k != -1)
+					{
+						if (board[i][k] != 0)
+						{
+							std::swap(board[i][j], board[i][k]);
+							break;
+						}
+						--k;
+					}
+				}
+			}
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+
+void Move(DIR dir, std::vector<std::vector<int>>& board)
+{
+	switch (dir)
+	{
+	case U:
+	{
+		Pull(board, U);
+		for (int i = 0; i < N; ++i)
+		{
+			for (int j = 0; j < N; ++j)
+			{
+				Combine(board, i, j, i, j + 1);
+			}
+		}
+		Pull(board, U);
+	}
+	break;
+	case D:
+		Pull(board, D);
+		for (int i = 0; i < N; ++i)
+		{
+			for (int j = N - 1; j != 0; --j)
+			{
+				Combine(board, i, j, i, j - 1);
+			}
+		}
+		Pull(board, D);
+		break;
+	case L:
+		Pull(board, L);
+		for (int i = 0; i < N; ++i)
+		{
+			for (int j = 0; j < N; ++j)
+			{
+				Combine(board, j, i, j + 1, i);
+			}
+		}
+		Pull(board, L);
+		break;
+	case R:
+		Pull(board, R);
+		for (int i = 0; i < N; ++i)
+		{
+			for (int j = N - 1; j != 0; --j)
+			{
+				Combine(board, j, i, j - 1, i);
+			}
+		}
+		Pull(board, R);
+		break;
+	default:
+		break;
+	}
+}
+/*
+4
+2 2 2 2
+2 2 2 2
+2 2 2 2
+2 2 2 2
+*/
+
+void PrintBoard(const std::vector<std::vector<int>>& board)
+{
+	cout << endl;
+	for (int i = 0; i < N; ++i)
+	{
+		for (int j = 0; j < N; ++j)
+		{
+			cout << board[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
+int BFS(int MAX)
+{
+	std::queue<Data> q;
+	for (int i = 0; i < 4; ++i)
+	{
+		Data tmp{};
+		tmp.depth = 1;
+		tmp.path.emplace_back(static_cast<DIR>(i));
+		q.emplace(tmp);
+	}
+	while (!q.empty())
+	{
+		auto data = q.front();
+		q.pop();
+		if (5 == data.depth)
+		{
+			std::vector<std::vector<int>> tmpBoard = Board;
+			for (auto dir : data.path)
+			{
+				Move(dir, tmpBoard);
+			}
+			MAX = std::max(MAX, GetMax(tmpBoard));
+			/*std::vector<std::pair<DIR, MAPBoard>> ResultPrintV{};
+			for (autoa dir : data.path)
+			{
+				Move(dir, tmpBoard);
+				ResultPrintV.emplace_back(dir, tmpBoard);
+			}
+			int tmpMax = MAX;
+			MAX = std::max(MAX, GetMax(tmpBoard));
+			if (MAX != tmpMax)
+			{
+				int i = 1;
+				for (const auto& ret : ResultPrintV)
+				{
+
+					std::cout << std::endl;
+					std::cout << i++ << " dir: " << static_cast<int>(ret.first) << std::endl;
+					PrintBoard(ret.second);
+				}
+			}*/
+		}
+		else
+		{
+			for (int i = 0; i < 4; ++i)
+			{
+				Data tmp = data;
+				tmp.depth++;
+				tmp.path.emplace_back(static_cast<DIR>(i));
+				q.emplace(tmp);
+			}
+		}
+	}
+
+	return MAX;
+}
+
+
+int main()
+{
+	cin >> N;
+	int MAX{};
+	Board.resize(N, std::vector<int>(N, 0));
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < N; j++)
+		{
+			cin >> Board[i][j];
+			MAX = std::max(MAX, Board[i][j]);
+		}
+	}
+
+	cout << BFS(MAX);
+	return 0;
+
+}
