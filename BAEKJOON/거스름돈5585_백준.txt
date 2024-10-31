@@ -1,0 +1,33 @@
+//https://www.acmicpc.net/problem/5585
+#include <iostream>
+using namespace std;
+
+
+int exchange(int coin, int& remainMoney)
+{
+	int q = (remainMoney / coin);
+	if (q > 0)
+	{
+		remainMoney -= q * coin;
+	}
+	return q;
+}
+
+constexpr int coins[] = { 500,100,50,10,5,1 };
+int main()
+{
+	int price{};
+	cin >> price;
+
+	int remainMoney = 1000 - price;
+	int coin{};
+
+	for (const int& c : coins)
+	{
+		coin += exchange(c, remainMoney);
+		if (remainMoney == 0)
+			break;
+	}
+
+	cout << coin;
+}
